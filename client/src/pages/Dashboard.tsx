@@ -10,7 +10,7 @@ import ActiveComponentContext from "../context/ActiveComponentContext";
 export default function Dashboard() {
     const { activeComponent, setActiveComponent } = useContext(ActiveComponentContext);
     return (
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center hide-scrollbar">
             <div className="w-[25%]">
             <Sidebar  />
             </div>

@@ -5,6 +5,8 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import AiEmailWriter from "../pages/AiEmailWriter";
 import AiBlogWriter from "../pages/AiBlogWriter";
+import AiResumeBuilder from "../pages/AiResumeBuilder";
+import AiCaptionGenerator from "../pages/AiCaptionGenerator";
 
 export default function Routers() {
     return (
@@ -15,6 +17,8 @@ export default function Routers() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/ai-email-writer" element={<AiEmailWriter />} />
             <Route path="/dashboard/ai-blog-writer" element={<AiBlogWriter />} />
+            <Route path="/dashboard/ai-resume-builder" element={<AiResumeBuilder />} />
+            <Route path="/dashboard/ai-social-media-caption-generator" element={<AiCaptionGenerator />} />
         </Routes>
     )
 }

@@ -1,6 +1,5 @@
 import { useContext } from "react"
 import AuthContext from "../context/AuthContext";
-import { images } from "../constants/images";
 import { Bell, Heart } from "lucide-react";
 
 export default function DashboardHeader() {

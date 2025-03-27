@@ -26,10 +26,11 @@ const GenerateImage = async(req,res) => {
 
 const fetchImage = async(req,res) => {
     try {
-        const { process_id } = req.body;
+        const { process_id } = req.query;
+        console.log(process_id);
 
-        const imageUrl = await fetchImageUrl(process_id);
-        return res.status(200).json({ success: true, imageUrl });
+        const response = await fetchImageUrl(process_id);
+        return res.status(200).json({ success: true, imageUrl: response.result.output[0] });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }

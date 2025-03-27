@@ -45,7 +45,7 @@ export default function Home() {
             <h3 className="text-lg font-semibold">Trending Templates</h3>
             <div className="grid grid-cols-4 gap-5 my-5">
                 {Ai_Templates.map((item) => (
-                  <Link to={item.link}><TemplateCard key={item.id} template={item} /></Link>
+                  <Link to={item.link} key={item.id}><TemplateCard  template={item} /></Link>
                 ))}
             </div>
         </div>
