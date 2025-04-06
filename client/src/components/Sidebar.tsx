@@ -35,7 +35,7 @@ export default function Sidebar() {
             key={item.id}
             onClick={() => setActiveComponent(item.component)}
           >
-            <item.icon size={20} className="text-neutral-500" />
+            <item.icon size={20} className={`${activeComponent ? 'text-black' : 'text-neutral-500'}`} />
             <h5 className="font-medium text-xs">{item.name}</h5>
           </div>
         ))}

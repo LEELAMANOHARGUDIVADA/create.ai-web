@@ -7,6 +7,7 @@ import Profile from "../components/Profile";
 import Home from "../components/Home";
 import ActiveComponentContext from "../context/ActiveComponentContext";
 import Subscriptions from "../components/Subscriptions";
+import TextGeneration from "../components/TextGeneration";
 
 export default function Dashboard() {
     const context = useContext(ActiveComponentContext);
@@ -30,6 +31,7 @@ export default function Dashboard() {
                 {activeComponent === "Settings" && <Settings />}
                 {activeComponent === "Home" && <Home />}
                 {activeComponent === "Subscriptions" && <Subscriptions />}
+                {activeComponent === "TextGeneration" && <TextGeneration />}
                 </div>
             </div>
         </div>

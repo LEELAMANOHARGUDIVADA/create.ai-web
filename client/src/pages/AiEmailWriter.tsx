@@ -4,6 +4,7 @@ import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
 import { images } from "../constants/images";
+import { ClipLoader } from "react-spinners";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -16,10 +17,12 @@ export default function AiEmailWriter() {
   const [keywords, setKeywords] = useState("");
   const [tone, setTone] = useState("");
   const [results, setResults] = useState<Result[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleGenerateEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      setLoading(true);
       const response = await axios.get(`${SERVER_URL}/api/ai/generateEmail`, {
         params: {
           prompt: prompt,
@@ -31,8 +34,10 @@ export default function AiEmailWriter() {
       setPrompt("");
       setKeywords("");
       setTone("");
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -137,16 +142,21 @@ export default function AiEmailWriter() {
               </div>
             </div>
             <div>
-              <Button
-                type="submit"
-                className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
-              >
-                <span className="text-xs text-white">Generate</span>
-                <div className="flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">40</span>
-                  <img src={images.stars} alt="" className="w-5 text-white" />
-                </div>
-              </Button>
+              {loading ? (
+                <Button className="flex items-center justify-center gap-1 bg-violet-600 px-20 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
+                >
+                  <ClipLoader size={15} color="#fff" />
+                </Button>
+              ) : (
+                <Button type="submit" className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
+                >
+                  <span className="text-xs text-white">Generate</span>
+                  <div className="flex items-center justify-center">
+                    <span className="text-white text-xs font-medium">40</span>
+                    <img src={images.stars} alt="" className="w-5 text-white" />
+                  </div>
+                </Button>
+              )}
             </div>
           </div>
         </form>

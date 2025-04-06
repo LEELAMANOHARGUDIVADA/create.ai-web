@@ -29,12 +29,6 @@ const nav_items:NavItem[] = [
         component: 'ImageGeneration'
     },
     {
-        id: 4,
-        icon: Video,
-        name: 'Text to Video',
-        component: 'VideoGeneration'
-    },
-    {
         id: 5,
         icon: User,
         name: 'Profile',

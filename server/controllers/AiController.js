@@ -3,10 +3,10 @@ import { ImageGenerationModel, fetchImageUrl } from "../ai-config/monster_api.co
 
 const GenerateText = async(req,res) => {
     try {
-        const { prompt } = req.body;
+        const { prompt } = req.query;
 
         const result = await TextGenerationModel.generateContent(prompt);
-        return res.status(200).json({ success: true, response: result.response.text() });
+        return res.status(200).json({ success: true, text: result.response.text() });
         
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -68,5 +68,21 @@ const GenerateBlog = async(req,res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 }
+const GenerateCaption = async(req,res) => {
+    try {
+        const { prompt, platform } = req.query;
 
-export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog };
+        if(!prompt || !platform){
+            throw new Error("All Fields Are Required");
+        }
+
+        const finalPrompt = "Generate Social Media Caption for" + platform + "Post Description:" + prompt;
+        const generateEmail = await TextGenerationModel.generateContent(finalPrompt);
+        
+        return res.status(200).json({ success: true, result: generateEmail.response.text() });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog, GenerateCaption };

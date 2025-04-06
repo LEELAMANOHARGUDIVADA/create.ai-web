@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { GoQuestion } from "react-icons/go";
 import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
 import { images } from "../constants/images";
+import { ClipLoader } from "react-spinners";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -13,35 +13,34 @@ interface Result {
 
 export default function AiCaptionGenerator() {
   const [prompt, setPrompt] = useState("");
-  const [keywords, setKeywords] = useState("");
-  const [tone, setTone] = useState("");
+  const [platform, setPlatform] = useState("");
   const [results, setResults] = useState<Result[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleGenerateEmail = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`${SERVER_URL}/api/ai/generateBlog`, {
+      setLoading(true);
+      const response = await axios.get(`${SERVER_URL}/api/ai/generateCaption`, {
         params: {
           prompt: prompt,
-          keywords: `keywords to be included: ${keywords}`,
-          tone: `tone of blog: ${tone}`,
+          platform: platform
         },
       });
       setResults((prevResults) => [...prevResults, response.data]);
       setPrompt("");
-      setKeywords("");
-      setTone("");
+      setPlatform("");
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
   const handleClearInputs = async () => {
     setPrompt("");
-    setKeywords("");
-    setTone("");
   };
 
   return (
@@ -51,7 +50,7 @@ export default function AiCaptionGenerator() {
         <div className="w-[40%] flex flex-col items-start justify-center px-4 py-3 fixed top-0 bg-white border-r z-10 border">
           <div className="flex items-center justify-center gap-4">
             <img
-              src="https://static.vecteezy.com/system/resources/previews/023/986/575/non_2x/blogger-logo-blogger-logo-transparent-blogger-icon-transparent-free-free-png.png"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCrUVtcc2GX4oUEvcWchBgFwcRs1JdJaTYPw&s"
               alt=""
               className="w-10"
             />
@@ -78,56 +77,28 @@ export default function AiCaptionGenerator() {
               <div className="w-full mt-3">
                 <textarea
                   className="w-full h-60 border outline-none resize-none rounded-2xl p-5 text-xs"
-                  placeholder="Write a blog about top 10 technologies to learn in 2025"
+                  placeholder="About your post..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   maxLength={400}
                 ></textarea>
               </div>
-              <div className="mt-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center justify-center gap-1">
-                    <h4 className="text-xs">Keywords to include</h4>
-                    <GoQuestion size={15} className="text-gray-500" />
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    {keywords.length}/100
-                  </span>
-                </div>
-                <div className="mt-3">
-                  <input
-                    type="text"
-                    className="outline-none w-full border rounded-md py-3 px-4 text-xs"
-                    placeholder="Technology, Artificial Intelligence, Blockchain"
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                    maxLength={100}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center justify-center gap-1">
-                    <h4 className="text-xs">Tone of voice</h4>
-                    <GoQuestion size={15} className="text-gray-500" />
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    {tone.length}/100
-                  </span>
-                </div>
-                <div className="mt-3">
-                  <input
-                    type="text"
-                    className="outline-none w-full border rounded-md py-3 px-4 text-xs"
-                    placeholder="Informative"
-                    value={tone}
-                    onChange={(e) => setTone(e.target.value)}
-                    maxLength={100}
-                  />
-                </div>
-              </div>
+            </div>
+            <div className="w-full p-4 bg-white rounded-xl mt-3 shadow-xs border ">
+              <select onChange={(e) => setPlatform(e.target.value)} className="text-xs cursor-pointer w-full outline-none">
+                <option value="">-- Choose Social Media platform --</option>
+                <option value="instagram">Instagram</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="youtube">YouTube</option>
+                <option value="twitter">Twitter</option>
+                <option value="facebook">Facebook</option>
+                <option value="tiktok">TikTok</option>
+                <option value="threads">Threads</option>
+                <option value="pinterest">Pinterest</option>
+              </select>
             </div>
           </div>
+
           <div className="fixed bottom-0 w-[40%] bg-white h-16 z-10 p-2 border-t border-r flex items-center justify-between px-4">
             <div className="flex items-center justify-between">
               <div
@@ -139,16 +110,22 @@ export default function AiCaptionGenerator() {
               </div>
             </div>
             <div>
-              <Button
-                type="submit"
-                className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
-              >
-                <span className="text-xs text-white">Generate</span>
-                <div className="flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">40</span>
-                  <img src={images.stars} alt="" className="w-5 text-white" />
-                </div>
-              </Button>
+              {loading ? (
+                <Button className="flex items-center justify-center gap-1 bg-violet-600 px-20 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500">
+                  <ClipLoader size={15} color="#fff" />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
+                >
+                  <span className="text-xs text-white">Generate</span>
+                  <div className="flex items-center justify-center">
+                    <span className="text-white text-xs font-medium">40</span>
+                    <img src={images.stars} alt="" className="w-5 text-white" />
+                  </div>
+                </Button>
+              )}
             </div>
           </div>
         </form>
