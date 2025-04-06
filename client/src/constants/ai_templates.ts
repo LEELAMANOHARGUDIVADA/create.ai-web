@@ -16,9 +16,9 @@ const Ai_Templates:Template[] = [
     },
     {
         id: 2,
-        title: "AI Resume Builder",
+        title: "AI PDF Summarizer",
         image: images.resume_template,
-        link: '/dashboard/ai-resume-builder'
+        link: '/dashboard/ai-pdf-summarizer'
     },
     {
         id: 3,

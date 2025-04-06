@@ -1,6 +1,6 @@
 import { Home, Image, MessageCircle, Settings, User, Video } from "lucide-react";
 
-export type ComponentType = "Home" | "ImageGeneration" | "TextGeneration" | "VideoGeneration" | "Profile" | "Settings";
+export type ComponentType = "Home" | "ImageGeneration" | "TextGeneration" | "VideoGeneration" | "Profile" | "Settings" | "Subscriptions";
 
 interface NavItem {
   id: number;

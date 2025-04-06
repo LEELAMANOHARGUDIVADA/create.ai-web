@@ -1,7 +1,8 @@
 import { FormEvent, Suspense, useState } from "react";
 import { images } from "../constants/images";
-import { Download, Send } from "lucide-react";
+import { Download } from "lucide-react";
 import axios from "axios";
+import { Button } from "./ui/button";
 
 interface Message {
   text: string,
@@ -118,13 +119,20 @@ export default function ImageGeneration() {
                 onChange={(e) => setPrompt(e.target.value)}
               />
             </div>
-            <button type="submit" className="bg-violet-600 w-10 h-10 rounded-full flex items-center justify-center shadow-sm border cursor-pointer">
-              <Send size={20} className="text-white" />
-            </button>
+            <Button
+                type="submit"
+                className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
+              >
+                <span className="text-xs text-white">Generate</span>
+                <div className="flex items-center justify-center">
+                  <span className="text-white text-xs font-medium">40</span>
+                  <img src={images.stars} alt="" className="w-5 text-white" />
+                </div>
+              </Button>
           </form>
         </div>
       ) : (
-        <div className="w-full flex flex-col items-center justify-center">
+        <div className="w-full flex flex-col items-center justify-center mt-10">
           <div className=" flex items-center justify-center gap-1 rounded-full py-1.5 px-5 bg-white border border-neutral-200 shadow-xs mt-10">
             <h5>Best text to image generator</h5>
             <img src={images.stars} alt="Create.ai" className="w-5" />
@@ -146,7 +154,7 @@ export default function ImageGeneration() {
               </button>
           </div>
 
-          <div className="w-full flex flex-col items-start px-5 mt-70">
+          <div className="w-full flex flex-col items-start px-5 mt-80 mb-10">
             <h4 className="text-2xl font-semibold">The Community Showcase</h4>
             <h5 className="text-xs text-gray-500 mt-2">
               Browse through a collection of imaginative and visually stunning

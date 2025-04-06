@@ -7,10 +7,11 @@ import Google from "passport-google-oauth20";
 import Github from "passport-github2";
 import Facebook from "passport-facebook"
 import passport from "passport";
-import { GoogleSignIn } from "./controllers/AuthController.js";
 import session from "express-session";
+import { GoogleSignIn } from "./controllers/AuthController.js";
 import UserRoutes from './routes/UserRoutes.js';
 import AiRoutes from './routes/AiRoutes.js'
+import PaymentRoutes from './routes/PaymentRoutes.js'
 
 const app = express();
 
@@ -72,6 +73,7 @@ function(accessToken, refreshToken, profile, cb) {
 //ROUTES
 app.use('/api/user', UserRoutes);
 app.use('/api/ai', AiRoutes);
+app.use('/api/v1/payment', PaymentRoutes);
 
 app.get(
   "/auth/google",

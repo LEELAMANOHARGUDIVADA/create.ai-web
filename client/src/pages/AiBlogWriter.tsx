@@ -1,23 +1,25 @@
-import { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import { GoQuestion } from "react-icons/go";
-import { PiMagicWandLight } from "react-icons/pi";
 import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
+import { images } from "../constants/images";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
-// interface Result {
-//   result: string;
-// }
+interface Result {
+  result: string;
+}
 
 export default function AiBlogWriter() {
   const [prompt, setPrompt] = useState("");
   const [keywords, setKeywords] = useState("");
   const [tone, setTone] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<Result[]>([]);
 
-  const handleGenerateEmail = async (event) => {
+  const handleGenerateEmail = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     try {
       const response = await axios.get(`${SERVER_URL}/api/ai/generateBlog`, {
@@ -139,10 +141,13 @@ export default function AiBlogWriter() {
             <div>
               <Button
                 type="submit"
-                className="flex items-center justify-center gap-2 bg-orange-500 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-orange-400"
+                className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
               >
-                <PiMagicWandLight size={20} className="text-white" />
                 <span className="text-xs text-white">Generate</span>
+                <div className="flex items-center justify-center">
+                  <span className="text-white text-xs font-medium">40</span>
+                  <img src={images.stars} alt="" className="w-5 text-white" />
+                </div>
               </Button>
             </div>
           </div>
@@ -150,7 +155,7 @@ export default function AiBlogWriter() {
       </div>
       <div className="w-[40%]">
         <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0 bg-white">
-          <h4 className="text-sm text-orange-500 cursor-pointer">Outputs</h4>
+          <h4 className="text-sm text-violet-600 cursor-pointer">Outputs</h4>
           <h4 className="text-sm text-gray-500 cursor-pointer">History</h4>
         </div>
         <div className=" space-y-5 mt-20 mb-10 px-5">

@@ -1,14 +1,14 @@
 import { FormEvent, useState } from "react";
 import { GoQuestion } from "react-icons/go";
-import { PiMagicWandLight } from "react-icons/pi";
-import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react"
+import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
+import { images } from "../constants/images";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
 interface Result {
-  result: string
+  result: string;
 }
 
 export default function AiEmailWriter() {
@@ -17,15 +17,15 @@ export default function AiEmailWriter() {
   const [tone, setTone] = useState("");
   const [results, setResults] = useState<Result[]>([]);
 
-  const handleGenerateEmail = async(event:FormEvent<HTMLFormElement>) => {
+  const handleGenerateEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`${SERVER_URL}/api/ai/generateEmail`,{
-        params:  {
+      const response = await axios.get(`${SERVER_URL}/api/ai/generateEmail`, {
+        params: {
           prompt: prompt,
           keywords: keywords,
-          tone: tone
-        }
+          tone: tone,
+        },
       });
       setResults((prevResults) => [...prevResults, response.data]);
       setPrompt("");
@@ -34,13 +34,13 @@ export default function AiEmailWriter() {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleClearInputs = async() => {
+  const handleClearInputs = async () => {
     setPrompt("");
     setKeywords("");
     setTone("");
-  }
+  };
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -48,7 +48,11 @@ export default function AiEmailWriter() {
       <div className="w-[50%] relative border">
         <div className="w-[50%] flex flex-col items-start justify-center px-4 py-3 border-b fixed top-0 bg-white border-r">
           <div className="flex items-center justify-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png" alt="" className="w-8" />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png"
+              alt=""
+              className="w-8"
+            />
             <div>
               <h3 className="text-sm font-medium">AI Email Generator</h3>
               <p className="text-xs text-gray-500">
@@ -57,7 +61,10 @@ export default function AiEmailWriter() {
             </div>
           </div>
         </div>
-        <form onSubmit={handleGenerateEmail} className="bg-neutral-100 h-screen">
+        <form
+          onSubmit={handleGenerateEmail}
+          className="bg-neutral-100 h-screen"
+        >
           <div className="p-6">
             <div className="w-full p-4 bg-white rounded-xl mt-16 shadow-xs border ">
               <div className="flex items-center justify-between">
@@ -121,15 +128,24 @@ export default function AiEmailWriter() {
           </div>
           <div className="fixed bottom-0 w-[50%] bg-white h-16 z-10 p-2 border-t border-r flex items-center justify-between px-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center justify-center gap-1 cursor-pointer" onClick={handleClearInputs}>
+              <div
+                className="flex items-center justify-center gap-1 cursor-pointer"
+                onClick={handleClearInputs}
+              >
                 <XIcon size={18} className="text-gray-500" />
                 <h4 className="text-sm">Clear All Inputs</h4>
               </div>
             </div>
             <div>
-              <Button type="submit" className="flex items-center justify-center gap-2 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500">
-                <PiMagicWandLight size={20} className="text-white" />
+              <Button
+                type="submit"
+                className="flex items-center justify-center gap-1 bg-violet-600 px-5 py-2 rounded-md cursor-pointer shadow-sm hover:bg-violet-500"
+              >
                 <span className="text-xs text-white">Generate</span>
+                <div className="flex items-center justify-center">
+                  <span className="text-white text-xs font-medium">40</span>
+                  <img src={images.stars} alt="" className="w-5 text-white" />
+                </div>
               </Button>
             </div>
           </div>
@@ -140,29 +156,33 @@ export default function AiEmailWriter() {
           <h4 className="text-sm text-violet-800 cursor-pointer">Outputs</h4>
           <h4 className="text-sm text-gray-500 cursor-pointer">History</h4>
         </div>
-        <div className="mt-5 px-5 space-y-3.5">
-          {results && results.slice().reverse().map((item, index) => (
-            <div key={index}>
-            <p className="text-sm">{item.result}</p>
-            <div className="flex items-center justify-start gap-2.5 mt-2.5">
-              <div className="border p-1.5 rounded-md cursor-pointer">
-                <Star size={15} className="text-gray-400"/>
-              </div>
-              <div className="border p-1.5 rounded-md cursor-pointer">
-                <Copy size={15} className="text-gray-400" />
-              </div>
-              <div className="border p-1.5 rounded-md cursor-pointer">
-                <File size={15} className="text-gray-400"/>
-              </div>
-              <div className="border p-1.5 rounded-md cursor-pointer">
-                <div className="flex items-center justify-center gap-2.5">
-                  <ThumbsUp size={15} className="text-gray-400" />
-                  <ThumbsDown size={15} className="text-gray-400" />
+        <div className="mt-16 px-5 space-y-3.5">
+          {results &&
+            results
+              .slice()
+              .reverse()
+              .map((item, index) => (
+                <div key={index}>
+                  <p className="text-sm">{item.result}</p>
+                  <div className="flex items-center justify-start gap-2.5 mt-2.5">
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Star size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Copy size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <File size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <div className="flex items-center justify-center gap-2.5">
+                        <ThumbsUp size={15} className="text-gray-400" />
+                        <ThumbsDown size={15} className="text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          ))}
+              ))}
         </div>
       </div>
     </div>

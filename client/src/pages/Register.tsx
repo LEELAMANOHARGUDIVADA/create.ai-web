@@ -2,8 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { images } from "../constants/images";
 import { useRef, useState } from "react";
 import axios from "axios";
-import Loader from "../components/Loader";
-import { CircleLoader, ClipLoader, RingLoader } from "react-spinners";
+import {  ClipLoader } from "react-spinners";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -86,7 +85,6 @@ export default function Register() {
     <div className="w-full h-screen">
       {isRegistered ? (
         <div>
-          <Recommendations />
         </div>
       ) : (
         <div className="w-full h-screen flex justify-center items-center">

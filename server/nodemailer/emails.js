@@ -28,10 +28,7 @@ const sendVerificationOtp = ({ email, otp }) => {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        .logo {
-            width: 120px;
-            margin-bottom: 20px;
-        }
+         
         .otp-box {
             font-size: 24px;
             font-weight: bold;
@@ -66,7 +63,7 @@ const sendVerificationOtp = ({ email, otp }) => {
 <body>
 
     <div class="container">
-        <img src=`` alt="Create.ai" class="logo">
+        
         <h2>Verify Your Email</h2>
         <p>Use the OTP below to complete your verification process.</p>
         

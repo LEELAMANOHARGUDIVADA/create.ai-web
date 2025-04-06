@@ -6,9 +6,16 @@ import Settings from "../components/Settings";
 import Profile from "../components/Profile";
 import Home from "../components/Home";
 import ActiveComponentContext from "../context/ActiveComponentContext";
+import Subscriptions from "../components/Subscriptions";
 
 export default function Dashboard() {
-    const { activeComponent, setActiveComponent } = useContext(ActiveComponentContext);
+    const context = useContext(ActiveComponentContext);
+    
+      if (!context) {
+        throw new Error("Dashboard must be used within an ActiveComponentProvider");
+      }
+    
+      const { activeComponent } = context;
     return (
         <div className="w-full flex items-center justify-center hide-scrollbar">
             <div className="w-[25%]">
@@ -22,6 +29,7 @@ export default function Dashboard() {
                 {activeComponent === "Profile" && <Profile />}
                 {activeComponent === "Settings" && <Settings />}
                 {activeComponent === "Home" && <Home />}
+                {activeComponent === "Subscriptions" && <Subscriptions />}
                 </div>
             </div>
         </div>

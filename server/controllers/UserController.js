@@ -32,7 +32,7 @@ const register = async (req, res) => {
     await user.save();
 
 
-    sendVerificationOtp({ email: user.email, otp: otp })
+    sendVerificationOtp({ email: user.email, otp: otp });
 
     return res
       .status(201)
@@ -42,7 +42,7 @@ const register = async (req, res) => {
         token: generateToken(user._id),
       });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error });
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 

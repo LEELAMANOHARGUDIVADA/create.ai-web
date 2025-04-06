@@ -19,7 +19,7 @@ const ImageGenerationModel = async (prompt) => {
       samples: 1,
       seed: 2414,
       steps: 15,
-      style: "anime",
+      style: "photorealistic",
     },
   };
 

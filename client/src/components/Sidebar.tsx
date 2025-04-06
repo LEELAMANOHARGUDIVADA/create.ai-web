@@ -1,22 +1,17 @@
 import { images } from "../constants/images";
 import { HiMiniChevronUpDown } from "react-icons/hi2";
 import nav_items from "../constants/nav_items";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
 import ActiveComponentContext from "../context/ActiveComponentContext";
 import { useContext } from "react";
 
 export default function Sidebar() {
-  const { activeComponent, setActiveComponent } = useContext(ActiveComponentContext);
+  const context = useContext(ActiveComponentContext);
+
+  if (!context) {
+    throw new Error("Sidebar must be used within an ActiveComponentProvider");
+  }
+
+  const { activeComponent, setActiveComponent } = context;
 
   return (
     <div
@@ -46,40 +41,12 @@ export default function Sidebar() {
         ))}
       </div>
 
-      <div className="w-full mt-32">
-        <div className="w-full h-28 rounded-xl bg-gradient-to-r from-blue-400  to-rose-400 text-white px-6 py-4">
-          <div className="flex items-center justify-start">
-          <h4 className="font-semibold">Credits</h4>
-          <img src={images.stars} alt="stars" className="w-5" />
+      <div className="w-[17.5%] fixed bottom-28">
+        
+        <div onClick={() => setActiveComponent("Subscriptions")} className="w-full bg-white py-2 rounded-md text-xs font-medium text-violet-500 cursor-pointer border shadow-xs flex items-center justify-center gap-1">
+              <span>Upgrade to Pro</span>
+              <img src={images.stars} alt="" className="w-5" />
           </div>
-          <div className="h-2 w-full bg-gray-200 rounded-full my-2">
-            <div
-              className={`w-[68%] h-full bg-white rounded-full shadow`}
-            ></div>
-          </div>
-          <h5 className="text-sm">6800/10000 credits used</h5>
-        </div>
-        <div className="mt-3">
-          <AlertDialog>
-            <AlertDialogTrigger className="w-full">
-            <div className="w-full bg-neutral-100 py-2 rounded-md text-xs font-medium text-purple-700 cursor-pointer border">
-            Upgrade
-          </div>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Choose Your Subscription Plan</AlertDialogTitle>
-                <AlertDialogDescription>
-                  
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="">Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
       </div>
 
       <div className="w-[88%] absolute bottom-5 h-14 flex items-center justify-between p-2 gap-3 cursor-pointer rounded-lg">
