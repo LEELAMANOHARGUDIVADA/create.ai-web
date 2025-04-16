@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { GoQuestion } from "react-icons/go";
 import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
@@ -17,7 +17,10 @@ export default function AiEmailWriter() {
   const [keywords, setKeywords] = useState("");
   const [tone, setTone] = useState("");
   const [results, setResults] = useState<Result[]>([]);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeResults, setActiveResults] = useState("Outputs");
+  const token = localStorage.getItem("token");
 
   const handleGenerateEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,6 +32,9 @@ export default function AiEmailWriter() {
           keywords: keywords,
           tone: tone,
         },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       setResults((prevResults) => [...prevResults, response.data]);
       setPrompt("");
@@ -36,7 +42,7 @@ export default function AiEmailWriter() {
       setTone("");
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.log(error.response);
       setLoading(false);
     }
   };
@@ -46,6 +52,22 @@ export default function AiEmailWriter() {
     setKeywords("");
     setTone("");
   };
+
+  const getEmailHistory = async() => {
+    setActiveResults("History")
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/ai/emailHistory`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // console.log(response.data);
+      setHistory(response.data.history);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
+
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -152,7 +174,7 @@ export default function AiEmailWriter() {
                 >
                   <span className="text-xs text-white">Generate</span>
                   <div className="flex items-center justify-center">
-                    <span className="text-white text-xs font-medium">40</span>
+                    <span className="text-white text-xs font-medium">20</span>
                     <img src={images.stars} alt="" className="w-5 text-white" />
                   </div>
                 </Button>
@@ -163,17 +185,19 @@ export default function AiEmailWriter() {
       </div>
       <div className="w-[30%] h-screen">
         <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0">
-          <h4 className="text-sm text-violet-800 cursor-pointer">Outputs</h4>
-          <h4 className="text-sm text-gray-500 cursor-pointer">History</h4>
+          <button onClick={() => setActiveResults("Outputs")} className={`text-sm ${activeResults === "Outputs" ? "text-violet-800" : "text-gray-500"}   cursor-pointer`}>Outputs</button>
+          <button onClick={getEmailHistory} className={`text-sm ${activeResults === "History" ? "text-violet-800" : "text-gray-500"} cursor-pointer`}>History</button>
         </div>
         <div className="mt-16 px-5 space-y-3.5">
-          {results &&
+          {activeResults === "Outputs" ? (
+            <div>
+              {results &&
             results
               .slice()
               .reverse()
               .map((item, index) => (
                 <div key={index}>
-                  <p className="text-sm">{item.result}</p>
+                  <pre className="text-sm whitespace-pre-wrap">{item.result}</pre>
                   <div className="flex items-center justify-start gap-2.5 mt-2.5">
                     <div className="border p-1.5 rounded-md cursor-pointer">
                       <Star size={15} className="text-gray-400" />
@@ -193,6 +217,37 @@ export default function AiEmailWriter() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {history &&
+            history
+              .slice()
+              .reverse()
+              .map((item, index) => (
+                <div key={index}>
+                  <pre className="text-sm whitespace-pre-wrap">{item.email}</pre>
+                  <div className="flex items-center justify-start gap-2.5 mt-2.5">
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Star size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Copy size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <File size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <div className="flex items-center justify-center gap-2.5">
+                        <ThumbsUp size={15} className="text-gray-400" />
+                        <ThumbsDown size={15} className="text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

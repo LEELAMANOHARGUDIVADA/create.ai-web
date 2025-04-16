@@ -18,7 +18,7 @@ const RazorpayButton = () => {
     };
   }, []);
 
-  return <div id="razorpay-container"></div>;
+  return <div id="razorpay-container" className="mt-5"></div>;
 };
 
 export default RazorpayButton;

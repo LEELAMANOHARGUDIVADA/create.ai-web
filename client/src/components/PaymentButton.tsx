@@ -54,7 +54,7 @@ export default function PaymentButton({ amount }){
     }
 
     return(
-        <div className="flex items-center justify-center mt-5">
+        <div className="flex items-center justify-center">
             <button className="cursor-pointer px-5 py-2 mt-5 rounded-xl bg-violet-500 text-white" onClick={handlePayment}>Pay Now</button>
         </div>
     )

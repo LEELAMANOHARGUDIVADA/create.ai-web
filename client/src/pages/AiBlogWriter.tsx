@@ -11,13 +11,19 @@ const SERVER_URL = import.meta.env.VITE_API_URL;
 interface Result {
   result: string;
 }
+interface History {
+  blog: string;
+}
 
 export default function AiBlogWriter() {
   const [prompt, setPrompt] = useState("");
   const [keywords, setKeywords] = useState("");
   const [tone, setTone] = useState("");
   const [results, setResults] = useState<Result[]>([]);
+  const [history, setHistory] = useState<History[]>([]);
+  const [activeResults, setActiveResults] = useState("Outputs");
   const [loading, setLoading] = useState<boolean>(false);
+  const token = localStorage.getItem("token");
 
   const handleGenerateEmail = async (
     event: React.FormEvent<HTMLFormElement>
@@ -31,6 +37,9 @@ export default function AiBlogWriter() {
           keywords: `keywords to be included: ${keywords}`,
           tone: `tone of blog: ${tone}`,
         },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       setResults((prevResults) => [...prevResults, response.data]);
       setPrompt("");
@@ -48,6 +57,21 @@ export default function AiBlogWriter() {
     setKeywords("");
     setTone("");
   };
+
+  const getBlogHistory = async() => {
+    setActiveResults("History")
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/ai/blogHistory`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // console.log(response.data);
+      setHistory(response.data.history);
+    } catch (error:any) {
+      console.log(error.response.data);
+    }
+  }
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -154,7 +178,7 @@ export default function AiBlogWriter() {
                 >
                   <span className="text-xs text-white">Generate</span>
                   <div className="flex items-center justify-center">
-                    <span className="text-white text-xs font-medium">40</span>
+                    <span className="text-white text-xs font-medium">20</span>
                     <img src={images.stars} alt="" className="w-5 text-white" />
                   </div>
                 </Button>
@@ -163,19 +187,21 @@ export default function AiBlogWriter() {
           </div>
         </form>
       </div>
-      <div className="w-[40%]">
-        <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0 bg-white">
-          <h4 className="text-sm text-violet-600 cursor-pointer">Outputs</h4>
-          <h4 className="text-sm text-gray-500 cursor-pointer">History</h4>
+      <div className="w-[40%] ">
+        <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0">
+          <button onClick={() => setActiveResults("Outputs")} className={`text-sm ${activeResults === "Outputs" ? "text-violet-800" : "text-gray-500"}   cursor-pointer`}>Outputs</button>
+          <button onClick={getBlogHistory} className={`text-sm ${activeResults === "History" ? "text-violet-800" : "text-gray-500"} cursor-pointer`}>History</button>
         </div>
-        <div className=" space-y-5 mt-20 mb-10 px-5">
-          {results &&
+        <div className="mt-16 px-5 space-y-3.5">
+          {activeResults === "Outputs" ? (
+            <div>
+              {results &&
             results
               .slice()
               .reverse()
               .map((item, index) => (
                 <div key={index}>
-                  <p className="text-sm">{item.result}</p>
+                  <pre className="text-sm whitespace-pre-wrap">{item.result}</pre>
                   <div className="flex items-center justify-start gap-2.5 mt-2.5">
                     <div className="border p-1.5 rounded-md cursor-pointer">
                       <Star size={15} className="text-gray-400" />
@@ -195,6 +221,37 @@ export default function AiBlogWriter() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {history &&
+            history
+              .slice()
+              .reverse()
+              .map((item, index) => (
+                <div key={index}>
+                  <pre className="text-sm whitespace-pre-wrap">{item.blog}</pre>
+                  <div className="flex items-center justify-start gap-2.5 mt-2.5">
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Star size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <Copy size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <File size={15} className="text-gray-400" />
+                    </div>
+                    <div className="border p-1.5 rounded-md cursor-pointer">
+                      <div className="flex items-center justify-center gap-2.5">
+                        <ThumbsUp size={15} className="text-gray-400" />
+                        <ThumbsDown size={15} className="text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

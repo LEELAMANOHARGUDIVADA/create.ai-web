@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
         default: false
     },
     verificationCode: String,
+    credits: {
+        type: Number,
+        default: 300
+    }
 }, { timestamps: true });
 
 const User = new mongoose.model('User', userSchema);

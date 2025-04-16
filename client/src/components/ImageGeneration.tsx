@@ -1,8 +1,8 @@
 import { FormEvent, Suspense, useState } from "react";
 import { images } from "../constants/images";
-import { Download } from "lucide-react";
 import axios from "axios";
 import { Button } from "./ui/button";
+import avatar from "../assets/avatars/default.png"
 
 interface Message {
   text: string,
@@ -72,21 +72,21 @@ export default function ImageGeneration() {
     <div className={`w-full h-screen bg-white px-5${isGenerateButtonClicked ? 'py-10' : 'py-5' } flex flex-col items-center justify-start mt-10 gap-10`}>
       {isGenerateButtonClicked ? (
         <div className="w-full h-[90%] flex items-start justify-center overflow-auto hide-scrollbar">
-          <div className="w-[60%] px-20 space-y-5 mt-5">
+          <div className="w-[60%] px-10 space-y-5 mt-5">
             {messages && messages.map((msg,index) => (
               <div key={index}>
               <div className="w-full flex items-center justify-start gap-3">
                 <img
-                  src="https://lh3.googleusercontent.com/a/ACg8ocI6oq7mtnPDRNWqFhdjwZeqrQC76IE2S5uMqQQ9bR_K1JC36A=s96-c-br100-rg-mo"
+                  src={avatar}
                   alt=""
-                  className="w-8 cursor-pointer"
+                  className="w-10 rounded-full cursor-pointer"
                 />
                 <span className="text-sm font-medium">
                  {msg.text}
                 </span>
               </div>
 
-              <div className="mt-5">
+              <div className="mt-5 px-12">
                 {msg.loading ? (
                   <div className="w-100 h-100 rounded-xl border flex items-center justify-center">
                     Generating...
@@ -99,10 +99,10 @@ export default function ImageGeneration() {
                 />
                 )}
                 <div className="mt-3 px-2">
-                  <div className="border w-32 p-1.5 rounded-md cursor-pointer flex items-center gap-2 shadow-xs">
+                  {/* <div className="border w-32 p-1.5 rounded-md cursor-pointer flex items-center gap-2 shadow-xs">
                     <Download size={15} className="text-gray-400" />
                     <span className="text-sm text-gray-500">Download</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function ImageGeneration() {
             
           </div>
           <form onSubmit={handleSendMessage} className="w-[80%] flex items-center justify-center gap-5 fixed bottom-5 px-10">
-            <div className=" bg-white px-6 py-2.5 rounded-lg shadow-sm border w-[50%]">
+            <div className=" bg-white px-6 py-2.5 rounded-lg shadow-sm border-2 w-[50%]">
               <input
                 type="text"
                 placeholder="Enter a prompt..."

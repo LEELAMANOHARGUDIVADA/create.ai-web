@@ -1,5 +1,7 @@
 import TextGenerationModel from "../ai-config/gemini.js"
 import { ImageGenerationModel, fetchImageUrl } from "../ai-config/monster_api.config.js";
+import Blog from "../models/BlogSchema.js";
+import Email from "../models/EmailSchema.js";
 
 const GenerateText = async(req,res) => {
     try {
@@ -46,12 +48,31 @@ const GenerateEmail = async(req,res) => {
 
         const finalPrompt = prompt + keywords + tone;
         const generateEmail = await TextGenerationModel.generateContent(finalPrompt);
+
+        const email = new Email({
+            email: generateEmail.response.text(),
+            user: req.user.id
+        });
+        await email.save();
         
         return res.status(200).json({ success: true, result: generateEmail.response.text() });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
 }
+const EmailHistory = async(req,res) => {
+    try {
+        const history = await Email.find({ user: req.user.id });
+
+        if(!history){
+            return res.status(200).json({ success: false, message: "No Emails Found!" });
+        }
+        return res.status(200).json({ success: true, history });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
 const GenerateBlog = async(req,res) => {
     try {
         const { prompt, keywords, tone } = req.query;
@@ -63,11 +84,30 @@ const GenerateBlog = async(req,res) => {
         const finalPrompt = prompt + keywords + tone;
         const generateEmail = await TextGenerationModel.generateContent(finalPrompt);
         
+        const blog = new Blog({
+            blog: generateEmail.response.text(),
+            user: req.user.id
+        });
+        await blog.save();
         return res.status(200).json({ success: true, result: generateEmail.response.text() });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
 }
+
+const BlogHistory = async(req,res) => {
+    try {
+        const history = await Blog.find({ user: req.user.id });
+
+        if(!history){
+            return res.status(200).json({ success: false, message: "No Blogs Found!" });
+        }
+        return res.status(200).json({ success: true, history });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
 const GenerateCaption = async(req,res) => {
     try {
         const { prompt, platform } = req.query;
@@ -85,4 +125,4 @@ const GenerateCaption = async(req,res) => {
     }
 }
 
-export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog, GenerateCaption };
+export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog, GenerateCaption, EmailHistory, BlogHistory };

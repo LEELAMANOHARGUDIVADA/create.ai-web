@@ -3,6 +3,7 @@ import { HiMiniChevronUpDown } from "react-icons/hi2";
 import nav_items from "../constants/nav_items";
 import ActiveComponentContext from "../context/ActiveComponentContext";
 import { useContext } from "react";
+import avatar from "../assets/avatars/default.png"
 
 export default function Sidebar() {
   const context = useContext(ActiveComponentContext);
@@ -12,6 +13,7 @@ export default function Sidebar() {
   }
 
   const { activeComponent, setActiveComponent } = context;
+  const username = localStorage.getItem("username");
 
   return (
     <div
@@ -51,11 +53,9 @@ export default function Sidebar() {
 
       <div className="w-[88%] absolute bottom-5 h-14 flex items-center justify-between p-2 gap-3 cursor-pointer rounded-lg">
         <div className="flex items-center justify-center gap-3">
-          <div className="bg-purple-900 w-9 h-9 rounded-full flex items-center justify-center ">
-            <h3 className="text-md text-white font-semibold">L</h3>
-          </div>
+          <img src={avatar} alt="" className="w-12 rounded-full" />
           <div>
-            <h3 className="text-xs font-semibold">Leela Manohar Gudivada</h3>
+            <h3 className="text-xs font-semibold">{username}</h3>
             <h4 className="text-[10px] font-medium mt-1">
               Free Plan
             </h4>

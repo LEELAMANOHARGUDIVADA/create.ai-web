@@ -142,7 +142,7 @@ export default function AiCaptionGenerator() {
               .reverse()
               .map((item, index) => (
                 <div key={index}>
-                  <p className="text-sm">{item.result}</p>
+                  <pre className="text-sm whitespace-pre-wrap">{item.result}</pre>
                   <div className="flex items-center justify-start gap-2.5 mt-2.5">
                     <div className="border p-1.5 rounded-md cursor-pointer">
                       <Star size={15} className="text-gray-400" />

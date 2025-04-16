@@ -1,7 +1,6 @@
 import User from "../models/UserSchema.js";
 
 export const GoogleSignIn = async(accessToken, refreshToken, profile, cb) => {
-    // console.log(profile);
     try {
         let user = await User.findOne({ email: profile.emails[0].value });
 
