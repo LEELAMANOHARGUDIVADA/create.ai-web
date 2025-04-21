@@ -84,8 +84,18 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: `${process.env.CLIENT_URL}/sign-in` }),
   function (req, res) {
+    const { token, firstName, lastName, email } = req.user._doc;
+
+    res.send(`
+      <script>
+        window.opener.postMessage({
+          token: "${token}",
+          username: "${firstName} ${lastName}"
+        }, "http://localhost:5173"); // Replace with your frontend origin
+        window.close();
+      </script>
+    `);
     
-    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
   }
 );
 

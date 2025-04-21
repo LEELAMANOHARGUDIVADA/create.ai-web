@@ -19,7 +19,21 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleGoogleSignIn = () => {
-    window.location.href = `${SERVER_URL}/auth/google`;
+    const loginWindow = window.open(
+      `${SERVER_URL}/auth/google`);
+    
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "http://localhost:8000") return;
+  
+      const { token, username } = event.data;
+  
+      // ✅ Save token
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+  
+      // ✅ Redirect
+      window.location.href = "/dashboard";
+    });
   };
   const handleGithubSignIn = () => {
     window.location.href = `${SERVER_URL}/auth/github`;
@@ -42,7 +56,8 @@ export default function Register() {
       setOtpSent(true);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+      setLoading(false);
     }
   };
 

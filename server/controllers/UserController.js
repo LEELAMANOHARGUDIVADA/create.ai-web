@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"
 const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-
+    
     if (!firstName || !email || !password)
       throw new Error("All Fields Are Required");
 

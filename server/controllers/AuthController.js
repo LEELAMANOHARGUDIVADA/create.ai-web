@@ -1,4 +1,5 @@
 import User from "../models/UserSchema.js";
+import generateToken from "../utils/jwt.js";
 
 export const GoogleSignIn = async(accessToken, refreshToken, profile, cb) => {
     try {
@@ -13,6 +14,10 @@ export const GoogleSignIn = async(accessToken, refreshToken, profile, cb) => {
             });
             await user.save();
         }
+
+        const token = generateToken(user._id);
+
+        user._doc.token = token;
         return cb(null, user);
     } catch (error) {
         return cb(error, null)
