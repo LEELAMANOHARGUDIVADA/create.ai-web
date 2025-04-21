@@ -1,10 +1,11 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { GoQuestion } from "react-icons/go";
 import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
 import { images } from "../constants/images";
 import { ClipLoader } from "react-spinners";
+import AuthContext from "../context/AuthContext";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -12,36 +13,63 @@ interface Result {
   result: string;
 }
 
+interface History {
+  email: string;
+}
+
 export default function AiEmailWriter() {
-  const [prompt, setPrompt] = useState("");
-  const [keywords, setKeywords] = useState("");
-  const [tone, setTone] = useState("");
+  const [prompt, setPrompt] = useState<string>("");
+  const [keywords, setKeywords] = useState<string>("");
+  const [tone, setTone] = useState<string>("");
   const [results, setResults] = useState<Result[]>([]);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<History[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [activeResults, setActiveResults] = useState("Outputs");
   const token = localStorage.getItem("token");
 
+  const userContext = useContext(AuthContext);
+  
+  if (!userContext) {
+    throw new Error("User Context not Found!");
+  }
+
+  const { setCredits } = userContext;
+
   const handleGenerateEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     try {
       setLoading(true);
-      const response = await axios.get(`${SERVER_URL}/api/ai/generateEmail`, {
-        params: {
-          prompt: prompt,
-          keywords: keywords,
-          tone: tone,
-        },
+      const creditsAvailable = await axios.post(`${SERVER_URL}/api/user/deductCredit`, {
+        cost: 20
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      setResults((prevResults) => [...prevResults, response.data]);
-      setPrompt("");
-      setKeywords("");
-      setTone("");
-      setLoading(false);
-    } catch (error) {
+      if(creditsAvailable.status == 200){
+        localStorage.setItem("credits", creditsAvailable.data.credits);
+        setCredits((prev) => (prev ?? 0) - 20);
+        const response = await axios.get(`${SERVER_URL}/api/ai/generateEmail`, {
+          params: {
+            prompt: prompt,
+            keywords: keywords,
+            tone: tone,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setResults((prevResults) => [...prevResults, response.data]);
+        setPrompt("");
+        setKeywords("");
+        setTone("");
+        setLoading(false);
+      }
+    } catch (error:any) {
+      if(error.status == 403){
+        alert("Low Credits! Upgrade to Pro");
+      }
       console.log(error.response);
       setLoading(false);
     }
@@ -63,7 +91,7 @@ export default function AiEmailWriter() {
       });
       // console.log(response.data);
       setHistory(response.data.history);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.response.data);
     }
   }
@@ -73,7 +101,7 @@ export default function AiEmailWriter() {
     <div className="w-full flex items-center justify-center">
       <div className="w-[20%]"></div>
       <div className="w-[50%] relative border">
-        <div className="w-[50%] flex flex-col items-start justify-center px-4 py-3 border-b fixed top-0 bg-white border-r">
+        <div className="w-[50%] flex flex-col items-start justify-center px-4 py-3 border-b fixed top-0 bg-white border-r border-l">
           <div className="flex items-center justify-center gap-4">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png"
@@ -90,10 +118,10 @@ export default function AiEmailWriter() {
         </div>
         <form
           onSubmit={handleGenerateEmail}
-          className="bg-neutral-100 h-screen"
+          className="bg-neutral-100 w-[50%] h-screen fixed top-15.5 border"
         >
           <div className="p-6">
-            <div className="w-full p-4 bg-white rounded-xl mt-16 shadow-xs border ">
+            <div className="w-full p-4 bg-white rounded-xl shadow-xs border ">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs">What is your email about?</h4>
                 <span className="text-xs text-gray-500">
@@ -184,7 +212,7 @@ export default function AiEmailWriter() {
         </form>
       </div>
       <div className="w-[30%] h-screen">
-        <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0">
+        <div className="w-full bg-white flex items-center justify-start gap-10 p-5 border fixed top-0">
           <button onClick={() => setActiveResults("Outputs")} className={`text-sm ${activeResults === "Outputs" ? "text-violet-800" : "text-gray-500"}   cursor-pointer`}>Outputs</button>
           <button onClick={getEmailHistory} className={`text-sm ${activeResults === "History" ? "text-violet-800" : "text-gray-500"} cursor-pointer`}>History</button>
         </div>

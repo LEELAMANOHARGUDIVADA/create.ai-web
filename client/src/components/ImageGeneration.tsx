@@ -1,8 +1,9 @@
-import { FormEvent, Suspense, useState } from "react";
+import { FormEvent, Suspense, useContext, useState } from "react";
 import { images } from "../constants/images";
 import axios from "axios";
 import { Button } from "./ui/button";
 import avatar from "../assets/avatars/default.png"
+import AuthContext from "../context/AuthContext";
 
 interface Message {
   text: string,
@@ -16,6 +17,14 @@ export default function ImageGeneration() {
   const [isGenerateButtonClicked, setIsGenerateButtonClicked] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState<string>('');
+  const token = localStorage.getItem("token");
+  const userContext = useContext(AuthContext);
+  
+  if (!userContext) {
+    throw new Error("User Context not Found!");
+  }
+
+  const { setCredits } = userContext;
 
   const handleSendMessage = async(event:FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,15 +47,31 @@ export default function ImageGeneration() {
 
   const generateImage = async(prompt:string) => {
     try {
-      const response = await axios.post(`${SERVER_URL}/api/ai/generateImage`, {
-        prompt
+      const creditsAvailable = await axios.post(`${SERVER_URL}/api/user/deductCredit`, {
+        cost: 40
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      console.log(response.data);
-      setTimeout(() => {
-        fetchImage(response.data.process_id);
-      },15000)
-    } catch (error) {
+      if(creditsAvailable.status == 200){
+        localStorage.setItem("credits", creditsAvailable.data.credits);
+        setCredits((prev) => (prev ?? 0) - 40);
+        const response = await axios.post(`${SERVER_URL}/api/ai/generateImage`, {
+          prompt
+        });
+        console.log(response.data);
+        setTimeout(() => {
+          fetchImage(response.data.process_id);
+        },15000)
+      }
+      
+    } catch (error:any) {
+      if(error.status == 403){
+        alert("Low Credits! Upgrade to Pro");
+      }
       console.error(error);
+
     }
   }
 

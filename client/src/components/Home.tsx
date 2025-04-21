@@ -1,4 +1,3 @@
-import { Heart } from "lucide-react";
 import { images } from "../constants/images";
 import Ai_Templates from "../constants/ai_templates";
 import TemplateCard from "./TemplateCard";
@@ -8,7 +7,11 @@ import ActiveComponentContext from "../context/ActiveComponentContext";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  const { activeComponent, setActiveComponent } = useContext(ActiveComponentContext);
+  const context = useContext(ActiveComponentContext);
+  if (!context) {
+    throw new Error("Dashboard must be used within an ActiveComponentProvider");
+  }
+  const { activeComponent, setActiveComponent } = context;
 
   return (
     <div className="w-full">

@@ -19,7 +19,7 @@ export default function PaymentButton({ amount }){
       }, []);
       
 
-    const handlePayment = async(event) => {
+    const handlePayment = async(event:React.FormEvent) => {
         try {
             const response = await axios.post(`${SERVER_URL}/api/v1/payment/createOrder`, {
                 amount

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { images } from "../constants/images";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import {  ClipLoader } from "react-spinners";
 
@@ -42,7 +42,7 @@ export default function Register() {
     window.location.href = `${SERVER_URL}/auth/facebook`;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -61,7 +61,7 @@ export default function Register() {
     }
   };
 
-  const handleOtpChange = ({ digit, index }) => {
+  const handleOtpChange = ({ digit, index }:{ digit:string, index: number }) => {
     if (!/^[0-9]*$/.test(digit)) return;
 
     const newOtp = [...otp];
@@ -73,13 +73,13 @@ export default function Register() {
     }
   };
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = (e:React.KeyboardEvent<HTMLInputElement>, index:number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputs.current[index - 1].focus();
     }
   };
 
-  const handleOtpSubmit = async (e) => {
+  const handleOtpSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
     e.preventDefault();
     const Otp = otp.join("");
@@ -91,7 +91,7 @@ export default function Register() {
       console.log(response.data);
       navigate('/dashboard');
       setLoading(false);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.response.data.message);
     }
   };

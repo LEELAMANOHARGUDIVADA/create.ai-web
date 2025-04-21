@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { GoQuestion } from "react-icons/go";
 import { Copy, File, Star, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";
 import { images } from "../constants/images";
 import { ClipLoader } from "react-spinners";
+import AuthContext from "../context/AuthContext";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -25,28 +26,51 @@ export default function AiBlogWriter() {
   const [loading, setLoading] = useState<boolean>(false);
   const token = localStorage.getItem("token");
 
-  const handleGenerateEmail = async (
+  const userContext = useContext(AuthContext);
+  
+  if (!userContext) {
+    throw new Error("User Context not Found!");
+  }
+
+  const { setCredits } = userContext;
+
+  const handleGenerateBlog = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.get(`${SERVER_URL}/api/ai/generateBlog`, {
-        params: {
-          prompt: prompt,
-          keywords: `keywords to be included: ${keywords}`,
-          tone: `tone of blog: ${tone}`,
-        },
+      const creditsAvailable = await axios.post(`${SERVER_URL}/api/user/deductCredit`, {
+        cost: 20
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      setResults((prevResults) => [...prevResults, response.data]);
-      setPrompt("");
-      setKeywords("");
-      setTone("");
-      setLoading(false);
-    } catch (error) {
+      if(creditsAvailable.status == 200){
+        localStorage.setItem("credits", creditsAvailable.data.credits);
+        setCredits((prev) => (prev ?? 0) - 20);
+        const response = await axios.get(`${SERVER_URL}/api/ai/generateBlog`, {
+          params: {
+            prompt: prompt,
+            keywords: `keywords to be included: ${keywords}`,
+            tone: `tone of blog: ${tone}`,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setResults((prevResults) => [...prevResults, response.data]);
+        setPrompt("");
+        setKeywords("");
+        setTone("");
+        setLoading(false);
+      }
+      
+    } catch (error:any) {
+      if(error.status == 403){
+        alert("Low Credits! Upgrade to Pro");
+      }
       console.error(error);
       setLoading(false);
     }
@@ -93,7 +117,7 @@ export default function AiBlogWriter() {
           </div>
         </div>
         <form
-          onSubmit={handleGenerateEmail}
+          onSubmit={handleGenerateBlog}
           className="bg-neutral-100 h-screen fixed top-0 w-[40%] border"
         >
           <div className="p-6">
@@ -187,8 +211,8 @@ export default function AiBlogWriter() {
           </div>
         </form>
       </div>
-      <div className="w-[40%] ">
-        <div className="w-full flex items-center justify-start gap-10 p-5 border fixed top-0">
+      <div className="w-[40%]">
+        <div className="w-full bg-white flex items-center justify-start gap-10 p-5 border fixed top-0">
           <button onClick={() => setActiveResults("Outputs")} className={`text-sm ${activeResults === "Outputs" ? "text-violet-800" : "text-gray-500"}   cursor-pointer`}>Outputs</button>
           <button onClick={getBlogHistory} className={`text-sm ${activeResults === "History" ? "text-violet-800" : "text-gray-500"} cursor-pointer`}>History</button>
         </div>
