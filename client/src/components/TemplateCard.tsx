@@ -1,6 +1,9 @@
-import { Heart } from "lucide-react";
+interface Template {
+  image: string,
+  title: string
+}
 
-export default function TemplateCard({ template }) {
+export default function TemplateCard({ template }:{ template: Template }) {
   return (
     <div className="w-full h-52 bg-white shadow-xs rounded-lg cursor-pointer p-2">
       <img

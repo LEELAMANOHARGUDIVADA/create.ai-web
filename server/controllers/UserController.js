@@ -60,7 +60,7 @@ const login = async(req,res) => {
 
     if(!isValidPassword) return res.status(400).json({ success: false, message: 'Invalid Password' });
 
-    return res.status(200).json({ success: true, message: 'Login Successful', token: generateToken(user._id), username: user.firstName + " " + user.lastName });
+    return res.status(200).json({ success: true, message: 'Login Successful', token: generateToken(user._id), username: user.firstName + " " + user.lastName, credits: user.credits });
   } catch (error) {
     return res.status(500).json({ success: false, error: error });
   }
@@ -84,4 +84,26 @@ const verifyOtp = async(req,res) => {
   }
 }
 
-export { register, login, verifyOtp }
+const deductCredit = async(req, res) => {
+  try {
+      const { cost } = req.body;
+      if(!req.user.id || !cost){
+          throw new Error("All Fields Are Required");
+      }
+
+      const user = await User.findOneAndUpdate(
+          { _id: req.user.id, credits: { $gte: cost } },
+          { $inc: { credits: -cost } },
+          { new: true }
+      );
+
+      if (!user) {
+          return res.status(403).json({ error: "Insufficient credits" });
+      }
+      return res.status(200).json({ success: true, credits: user.credits });
+  } catch (error) {
+      return res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+export { register, login, verifyOtp, deductCredit }

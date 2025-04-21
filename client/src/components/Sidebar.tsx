@@ -4,16 +4,26 @@ import nav_items from "../constants/nav_items";
 import ActiveComponentContext from "../context/ActiveComponentContext";
 import { useContext } from "react";
 import avatar from "../assets/avatars/default.png"
+import AuthContext from "../context/AuthContext";
 
 export default function Sidebar() {
   const context = useContext(ActiveComponentContext);
-
+  
   if (!context) {
     throw new Error("Sidebar must be used within an ActiveComponentProvider");
   }
 
   const { activeComponent, setActiveComponent } = context;
   const username = localStorage.getItem("username");
+
+  const userContext = useContext(AuthContext);
+  
+  if (!userContext) {
+    throw new Error("User Context not Found!");
+  }
+
+  const { credits } = userContext;
+
 
   return (
     <div
@@ -57,7 +67,7 @@ export default function Sidebar() {
           <div>
             <h3 className="text-xs font-semibold">{username}</h3>
             <h4 className="text-[10px] font-medium mt-1">
-              Free Plan
+              {credits} Credits
             </h4>
           </div>
         </div>

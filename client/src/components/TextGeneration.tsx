@@ -79,7 +79,7 @@ export default function TextGeneration(){
             ))}
                 </div>
             ) : (
-                <div className="w-full mt-[10%] flex flex-col items-center justify-center space-y-3">
+                <div className="w-full mt-[18%] flex flex-col items-center justify-center space-y-3">
                     <img
                   src={loader}
                   alt=""
