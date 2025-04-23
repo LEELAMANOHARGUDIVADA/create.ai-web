@@ -14,12 +14,12 @@ const Ai_Templates:Template[] = [
         image: images.email_template,
         link: '/dashboard/ai-email-writer'
     },
-    {
-        id: 2,
-        title: "AI PDF Summarizer",
-        image: images.resume_template,
-        link: '/dashboard/ai-pdf-summarizer'
-    },
+    // {
+    //     id: 2,
+    //     title: "AI PDF Summarizer",
+    //     image: images.resume_template,
+    //     link: '/dashboard/ai-pdf-summarizer'
+    // },
     {
         id: 3,
         title: "AI Blog Generator",

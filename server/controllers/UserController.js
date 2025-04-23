@@ -39,7 +39,7 @@ const register = async (req, res) => {
       .json({
         success: true,
         message: "Registration Successful",
-        token: generateToken(user._id),
+        
       });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
@@ -78,7 +78,7 @@ const verifyOtp = async(req,res) => {
 
     user.isVerified = true;
     user.save();
-    return res.status(200).json({ success: true, message: 'Otp Verification Successful' });
+    return res.status(200).json({ success: true, message: 'Otp Verification Successful', token: generateToken(user._id), username: user.firstName + " " + user.lastName, credits: user.credits });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }

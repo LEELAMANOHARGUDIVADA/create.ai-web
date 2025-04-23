@@ -11,7 +11,7 @@ export default function Home() {
   if (!context) {
     throw new Error("Dashboard must be used within an ActiveComponentProvider");
   }
-  const { activeComponent, setActiveComponent } = context;
+  const {  setActiveComponent } = context;
 
   return (
     <div className="w-full">
@@ -26,7 +26,7 @@ export default function Home() {
 
       <div className="p-6 space-y-6">
         <div>
-          <h3 className="text-lg font-semibold">Recent AI Creations</h3>
+          <h3 className="text-lg font-semibold">Top AI Creations</h3>
           <div className="grid grid-cols-3 gap-4 mt-2">
             <div className="w-full h-52 bg-gray-200 rounded-lg cursor-pointer">
                 <img src={images.bird} alt="" className="h-full w-full object-cover object-center rounded-lg shadow-sm" />

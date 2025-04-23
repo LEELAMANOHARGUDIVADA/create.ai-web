@@ -1,6 +1,6 @@
-import { Home, Image, MessageCircle, Settings, User, Video } from "lucide-react";
+import { Home, Image, MessageCircle, Settings, User, Code } from "lucide-react";
 
-export type ComponentType = "Home" | "ImageGeneration" | "TextGeneration" | "VideoGeneration" | "Profile" | "Settings" | "Subscriptions";
+export type ComponentType = "Home" | "ImageGeneration" | "TextGeneration" | "CodeRefactorer" | "Profile" | "Settings" | "Subscriptions";
 
 interface NavItem {
   id: number;
@@ -27,6 +27,12 @@ const nav_items:NavItem[] = [
         icon: Image,
         name: 'Text to Image',
         component: 'ImageGeneration'
+    },
+    {
+        id: 4,
+        icon: Code,
+        name: 'Code Refactorer',
+        component: 'CodeRefactorer'
     },
     {
         id: 5,

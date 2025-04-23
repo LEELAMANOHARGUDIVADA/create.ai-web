@@ -34,7 +34,19 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+    const loginWindow = window.open(
+      `${SERVER_URL}/auth/google`);
+    
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "http://localhost:8000") return;
+  
+      const { token, username, credits } = event.data;
+  
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+      localStorage.setItem("credits", credits);
+      window.location.href = "/dashboard";
+    });
   };
   const handleGithubSignIn = () => {
     window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;

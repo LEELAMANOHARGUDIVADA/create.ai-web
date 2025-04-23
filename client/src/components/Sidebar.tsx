@@ -56,7 +56,7 @@ export default function Sidebar() {
       <div className="w-[17.5%] fixed bottom-28">
         
         <div onClick={() => setActiveComponent("Subscriptions")} className="w-full bg-white py-2 rounded-md text-xs font-medium text-violet-500 cursor-pointer border shadow-xs flex items-center justify-center gap-1">
-              <span>Upgrade to Pro</span>
+              <span>Buy Credits</span>
               <img src={images.stars} alt="" className="w-5" />
           </div>
       </div>

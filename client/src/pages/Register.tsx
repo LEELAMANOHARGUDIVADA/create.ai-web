@@ -25,13 +25,11 @@ export default function Register() {
     window.addEventListener("message", (event) => {
       if (event.origin !== "http://localhost:8000") return;
   
-      const { token, username } = event.data;
+      const { token, username, credits } = event.data;
   
-      // ✅ Save token
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
-  
-      // ✅ Redirect
+      localStorage.setItem("credits", credits);
       window.location.href = "/dashboard";
     });
   };
@@ -55,7 +53,7 @@ export default function Register() {
       console.log(response.data);
       setOtpSent(true);
       setLoading(false);
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.message);
       setLoading(false);
     }
@@ -89,6 +87,9 @@ export default function Register() {
         otp: Otp,
       });
       console.log(response.data);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("username", response.data.username);
+      localStorage.setItem("credits", response.data.credits);
       navigate('/dashboard');
       setLoading(false);
     } catch (error:any) {
@@ -257,7 +258,7 @@ export default function Register() {
                       {otp.map((num, index) => (
                         <div
                           key={index}
-                          className="w-12 h-12 rounded-lg border flex items-center justify-center"
+                          className="w-12 h-12 rounded-lg border border-black flex items-center justify-center"
                         >
                           <input
                             type="text"

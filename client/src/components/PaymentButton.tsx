@@ -1,11 +1,10 @@
 import axios from "axios"
-import Razorpay from "razorpay"
 import { useEffect } from "react";
-import { images } from "../constants/images";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
-export default function PaymentButton({ amount }){
+export default function PaymentButton({ amount }:any){
+  const token = localStorage.getItem("token");
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -37,9 +36,20 @@ export default function PaymentButton({ amount }){
                 name: "Create.ai",
                 description: "Subscription Plan",
                 order_id: response.data.id,
-                handler: async function(response) {
-                  console.log(response);
+                handler: async function() {
+                  // console.log(response);
+                  const response = await axios.post(`${SERVER_URL}/api/v1/payment/addCredits`, {
+                    count: 1000
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+                if(response.status == 200){
+                  localStorage.setItem("credits", response.data.credits);
                   alert("Payment Successful!");
+                  window.location.reload();
+                }
                 },
                 callback_url: 'http://localhost:5173/dashboard'
                 

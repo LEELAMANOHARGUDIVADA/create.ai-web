@@ -9,6 +9,7 @@ import ActiveComponentContext from "../context/ActiveComponentContext";
 import Subscriptions from "../components/Subscriptions";
 import TextGeneration from "../components/TextGeneration";
 import { useNavigate } from "react-router-dom";
+import CodeRefactorer from "../components/CodeRefactorer";
 
 export default function Dashboard() {
     const context = useContext(ActiveComponentContext);
@@ -41,6 +42,7 @@ export default function Dashboard() {
                 {activeComponent === "Home" && <Home />}
                 {activeComponent === "Subscriptions" && <Subscriptions />}
                 {activeComponent === "TextGeneration" && <TextGeneration />}
+                {activeComponent === "CodeRefactorer" && <CodeRefactorer />}
                 </div>
             </div>
         </div>
