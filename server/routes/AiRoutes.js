@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { fetchImage, GenerateImage, GenerateText, GenerateEmail, GenerateBlog, GenerateCaption, EmailHistory, BlogHistory, RefactorCode } from "../controllers/AiController.js";
+import { fetchImage, GenerateImage, GenerateText, GenerateEmail, GenerateBlog, GenerateCaption, EmailHistory, BlogHistory, RefactorCode, GeneratePPT } from "../controllers/AiController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -13,6 +13,6 @@ router.get('/generateBlog', authMiddleware, GenerateBlog);
 router.get('/blogHistory', authMiddleware, BlogHistory);
 router.get('/generateCaption', GenerateCaption);
 router.get('/refactorCode', RefactorCode);
-
+router.get('/generatePPT', GeneratePPT);
 
 export default router;

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  server1:
+    build:
+      context: ./server
+    environment:
+      - PORT=8001
+    env_file:
+      - server/.env   # Ensure the .env file is loaded into the container
+    ports:
+      - "8001:8001"
+
+  server2:
+    build:
+      context: ./server
+    environment:
+      - PORT=8002
+    env_file:
+      - server/.env   # Ensure the .env file is loaded into the container
+    ports:
+      - "8002:8002"
+
+  server3:
+    build:
+      context: ./server
+    environment:
+      - PORT=8003
+    env_file:
+      - server/.env   # Ensure the .env file is loaded into the container
+    ports:
+      - "8003:8003"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - server1
+      - server2
+      - server3

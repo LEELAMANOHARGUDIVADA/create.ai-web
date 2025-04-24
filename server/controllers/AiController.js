@@ -3,6 +3,7 @@ import { ImageGenerationModel, fetchImageUrl } from "../ai-config/monster_api.co
 import Blog from "../models/BlogSchema.js";
 import Email from "../models/EmailSchema.js";
 import User from "../models/UserSchema.js";
+import extractJsonFromMarkdown from "../utils/jsonExtractor.js";
 
 const GenerateText = async (req, res) => {
     try {
@@ -145,11 +146,11 @@ const RefactorCode = async (req, res) => {
 
         const response = refactored_code.response.candidates[0].content.parts[0].text;
 
-        
+
         const cleanedText = response
             .replace(/```json|```/g, '')
             .replace(/\n+/g, '\n')
-            .trim();             
+            .trim();
 
         let parsed;
         try {
@@ -174,4 +175,31 @@ const RefactorCode = async (req, res) => {
     }
 }
 
-export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog, GenerateCaption, EmailHistory, BlogHistory, RefactorCode };
+const GeneratePPT = async (req, res) => {
+    try {
+        const { topic } = req.query;
+
+        if (!topic) {
+            throw new Error("All Fields Are Required");
+        }
+
+        const prompt = `
+        Generate a structured slide deck about "${topic}". 
+        Output format should be JSON with a "title" and "slides" array. 
+        Each slide should have a "heading","content" and "image_prompt": a very short description of an image that can visually support the slide not more than 20 words.
+        Total slides: 8.
+        Make content concise and presentation-friendly.
+        `;
+
+        const generatePPT = await TextGenerationModel.generateContent(prompt);
+
+        const parsedResponse = extractJsonFromMarkdown(generatePPT.response.text());
+        // console.log(parsedResponse);
+
+        return res.status(200).json({ success: true, result: parsedResponse});
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+export { GenerateText, GenerateImage, fetchImage, GenerateEmail, GenerateBlog, GenerateCaption, EmailHistory, BlogHistory, RefactorCode, GeneratePPT };

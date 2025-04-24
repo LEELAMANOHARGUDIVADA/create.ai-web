@@ -68,7 +68,7 @@ export default function CodeRefactorer() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className={`w-full flex items-center justify-end gap-3 mb-5`}>
+                                        <div className={`w-full flex items-start justify-end gap-3 mb-5`}>
                                             <span className="text-sm font-medium whitespace-pre-wrap">
                                                 {msg.text}
                                             </span>

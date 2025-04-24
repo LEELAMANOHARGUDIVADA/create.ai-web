@@ -3,7 +3,12 @@ import { useEffect } from "react";
 
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
-export default function PaymentButton({ amount }:any){
+interface PaymentProps {
+  amount: number,
+  count: number
+}
+
+export default function PaymentButton({ amount, count }:PaymentProps){
   const token = localStorage.getItem("token");
     useEffect(() => {
         const script = document.createElement("script");
@@ -39,7 +44,7 @@ export default function PaymentButton({ amount }:any){
                 handler: async function() {
                   // console.log(response);
                   const response = await axios.post(`${SERVER_URL}/api/v1/payment/addCredits`, {
-                    count: 1000
+                    count: count
                 }, {
                   headers: {
                     Authorization: `Bearer ${token}`
@@ -65,7 +70,7 @@ export default function PaymentButton({ amount }:any){
 
     return(
         <div className="flex items-center justify-center">
-            <button className="cursor-pointer px-5 py-2 mt-5 rounded-xl bg-violet-500 text-white" onClick={handlePayment}>Pay Now</button>
+            <button className="cursor-pointer px-5 py-2 mt-5 rounded-lg bg-violet-500 text-white" onClick={handlePayment}>Pay Now</button>
         </div>
     )
 }
